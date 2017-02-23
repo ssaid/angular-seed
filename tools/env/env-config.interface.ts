@@ -3,4 +3,7 @@
 export interface EnvConfig {
   API?: string;
   ENV?: string;
+  USER?: string;
+  PASS?: string;
+  DB?: string;
 }
