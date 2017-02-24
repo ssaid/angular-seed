@@ -1,3 +1,18 @@
 <p>LoginPage.</p>
 
-<h2>LoginPage</h2>
+<form (ngSubmit)="onLogin(loginForm)" #loginForm="ngForm" novalidate>
+  
+  <div class="form-group">
+    <label for="userpass">Credentials</label>
+    <input [(ngModel)]="login.userpass" #username="ngModel" name="userpass" type="password" class="form-control" id="userpass" placeholder="User Password" required spellcheck="false" autocapitalize="off">
+  </div>
+
+  <div class="form-group">
+    <label for="database">Database</label>
+    <select [(ngModel)]="login.db" #db="ngModel" name="db" class="form-control" id="database" required>
+      <option *ngFor="let db of dbs" [value]="db">{{db}}</option>
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-success" [disabled]="!loginForm.form.valid">Submit</button>
+</form>

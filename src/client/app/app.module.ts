@@ -10,9 +10,10 @@ import { AboutModule } from './about/about.module';
 import { HomeModule } from './home/home.module';
 import { SharedModule } from './shared/shared.module';
 import { odooService } from './angular-odoo/odoo.service';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
-  imports: [BrowserModule, HttpModule, AppRoutingModule, LoginModule, AboutModule, HomeModule, SharedModule.forRoot()],
+  imports: [BrowserModule, FormsModule, HttpModule, AppRoutingModule, LoginModule, AboutModule, HomeModule, SharedModule.forRoot()],
   declarations: [AppComponent],
   providers: [{
     provide: APP_BASE_HREF,

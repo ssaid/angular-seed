@@ -17,12 +17,14 @@ export class LoginComponent {
     console.log('Login successfull');
   };
   dbs = [];
+  submitted = false;
+  separator = ' ';
   handleError = null;
 
   constructor(public odoo: odooService){
   var defaultDb = null;
   this.handleError = (err) => {
-    console.warn('yeah ! une erreur', err);
+    console.warn('Error ', err);
   }
   odoo.getSessionInfo()
     .then( x => defaultDb = x.db)
@@ -37,11 +39,32 @@ export class LoginComponent {
       if (!isLogged)
         return odoo.getDbList().then(
         x => {
-            console.log('voici les bases', x)
+            console.info('Available Databases', x);
             this.dbs = x;
             this.login.db = defaultDb;
         }
       )
     }).then(null, this.handleError);
+  }
+  onLogin(form) {
+    this.submitted = true;
+    var db = null, login = null, password = null;
+
+    if (form.valid) {
+      db = this.login.db;
+      let userpass = this.login.userpass;
+      if (userpass.indexOf(this.separator) !== -1 ) {
+        let splitted = userpass.split(this.separator);
+        login = splitted[0];
+        password = splitted[1];
+      } else { //token based auth
+        login = 'based_on_token';
+        password = userpass;
+      }
+
+      this.odoo.login(db, login, password).then(
+        () => this.loginSuccess()
+      , this.handleError);
+    }
   }
 }
