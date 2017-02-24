@@ -133,7 +133,8 @@ export class odooService {
 		if (this.shouldUseJsonCall)
 			return this.callJson('db','list',[]);
 		else
-			return this.sendRequest('/web/database/list', {});
+			// >= 8.0 /list else /get_list
+			return this.sendRequest('/web/database/get_list', {});
 	}
 	callJson(service, method, args) {
 		var params = {
