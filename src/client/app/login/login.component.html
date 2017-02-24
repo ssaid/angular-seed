@@ -1,7 +1,8 @@
 <p>LoginPage.</p>
 
 <form (ngSubmit)="onLogin(loginForm)" #loginForm="ngForm" novalidate>
-  
+ <fieldset [disabled]="!dbs.length">
+   
   <div class="form-group">
     <label for="userpass">Credentials</label>
     <input [(ngModel)]="login.userpass" #username="ngModel" name="userpass" type="password" class="form-control" id="userpass" placeholder="User Password" required spellcheck="false" autocapitalize="off">
@@ -15,4 +16,5 @@
   </div>
 
   <button type="submit" class="btn btn-success" [disabled]="!loginForm.form.valid">Submit</button>
+ </fieldset> 
 </form>
