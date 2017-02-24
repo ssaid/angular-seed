@@ -2,6 +2,7 @@
 
 import {Injectable} from "@angular/core";
 import {Http, Headers, Request} from '@angular/http';
+import { Config } from '../shared/config/env.config';
 
 var cookies = (function() {
 	var session_id; //cookies doesn't work with Android Default Browser / Ionic
@@ -42,6 +43,7 @@ export class odooService {
 	shouldUseJsonCall: boolean;
 	context: any;
 	uniq_id_counter: number = 0;
+	host: string = Config.API;
 	constructor(public http: Http) {
 	}
 	/**
@@ -181,7 +183,7 @@ export class odooService {
 			};
 			return {
 				'method' : 'POST',
-				'url' : url,
+				'url' : self.host + url,
 				'body' : JSON.stringify(json_data),
 				'headers': headers,
 				'id': ("r" + self.uniq_id_counter),
@@ -261,6 +263,7 @@ export class odooService {
 		*/
 		function http(url, params) {
 			var req = buildRequest(url, params);
+			console.info(req);
 			var headers = new Headers(req.headers);
 			var obj = {
 				url: req.url,
