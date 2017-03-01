@@ -259,7 +259,8 @@ export class odooService {
 				url: req.url,
 				method: req.method,
 				headers: headers,
-				body: req.body
+				body: req.body,
+				withCredentials: true,
 			}
 			var request = new Request(obj);
 			return self.http.request(request)
