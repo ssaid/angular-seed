@@ -14,8 +14,10 @@ import 'rxjs/add/operator/toPromise';  // for debugging
 export class LoginComponent {
   login: { userpass?: string, db?: string} = {};
   loginSuccess() {
-    console.log('Login successfull');
+    console.info('[LoginComponent]: LoggedIn');
+    this.isLoggedIn = true;
   };
+  isLoggedIn: boolean = false;
   dbs = [];
   submitted = false;
   separator = ' ';

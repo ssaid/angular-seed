@@ -1,5 +1,4 @@
-<p>LoginPage.</p>
-
+<ng-container *ngIf="!isLoggedIn">
 <form (ngSubmit)="onLogin(loginForm)" #loginForm="ngForm" novalidate>
  <fieldset [disabled]="!dbs.length">
    
@@ -18,3 +17,7 @@
   <button type="submit" class="btn btn-success" [disabled]="!loginForm.form.valid">Submit</button>
  </fieldset> 
 </form>
+</ng-container>
+<ng-container *ngIf="isLoggedIn">
+  <h2>Already logged in.</h2>
+</ng-container>
