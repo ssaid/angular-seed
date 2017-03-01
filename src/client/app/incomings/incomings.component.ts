@@ -21,8 +21,7 @@ export class IncomingsComponent implements OnInit{
   getPickings(): void {
     this.open.get_pickings_in()
       .then( (pickings: any) => {
-        console.warn('rr:',this.rr);
-        // TODO: this is not working properly because the get_pickings_in is returning void
+        console.warn('rr:', pickings);
       });
   }
   constructor(public open: OpenService){
