@@ -13,7 +13,7 @@ export class OpenService {
     return this.odoo.searchRead('stock.picking.in', [["type", "=", "in"]], ["name", "partner_id"])
       .then( (pickings: any) => {
         console.log("[OpenService]: ", pickings);
-        return pickings;
+        return pickings.records;
       });
   }
 }
