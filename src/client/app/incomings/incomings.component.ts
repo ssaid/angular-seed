@@ -3,6 +3,11 @@ import { Component, OnInit } from '@angular/core';
 // import 'rxjs/add/operator/toPromise';  // for debugging
 import { OpenService } from './open.service';
 
+export class Picking{
+  id: number;
+  name: string;
+}
+
 /**
  * This class represents the lazy loaded LoginComponent.
  */
