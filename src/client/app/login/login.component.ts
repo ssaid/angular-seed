@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { odooService } from '../angular-odoo/odoo.service';
 import 'rxjs/add/operator/toPromise';  // for debugging
+import { NotificationsService } from 'angular2-notifications';
 
 /**
  * This class represents the lazy loaded LoginComponent.
@@ -23,10 +24,18 @@ export class LoginComponent {
   separator = ' ';
   handleError = null;
 
-  constructor(public odoo: odooService){
+  constructor(public odoo: odooService, private _notificationsService: NotificationsService){
   var defaultDb = null;
   this.handleError = (err) => {
     console.warn('Error ', err);
+    this._notificationsService.error(err.title, err.message,
+    {
+        timeOut: 5000,
+        showProgressBar: true,
+        pauseOnHover: false,
+        clickToClose: false,
+        maxLength: 20
+    })
   }
   odoo.getSessionInfo()
     .then( x => defaultDb = x.db)

@@ -13,9 +13,10 @@ import { HomeModule } from './home/home.module';
 import { SharedModule } from './shared/shared.module';
 import { odooService } from './angular-odoo/odoo.service';
 import { FormsModule } from '@angular/forms';
+import { SimpleNotificationsModule } from 'angular2-notifications';
 
 @NgModule({
-  imports: [BrowserModule, FormsModule, HttpModule, AppRoutingModule, LoginModule, IncomingsModule, AboutModule, HomeModule, SharedModule.forRoot()],
+  imports: [BrowserModule, FormsModule, HttpModule, AppRoutingModule, LoginModule, IncomingsModule, AboutModule, HomeModule, SharedModule.forRoot(), SimpleNotificationsModule.forRoot() ],
   declarations: [AppComponent],
   providers: [{
     provide: APP_BASE_HREF,

@@ -15,4 +15,9 @@ export class AppComponent {
   constructor() {
     console.log('Environment config', Config);
   }
+  public options = {
+    position: ["bottom", "left"],
+    timeOut: 5000,
+    lastOnBottom: true
+  }
 }

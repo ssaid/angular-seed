@@ -388,6 +388,7 @@ export class SeedConfig {
       '@angular/compiler/testing': 'node_modules/@angular/compiler/bundles/compiler-testing.umd.js',
       '@angular/core/testing': 'node_modules/@angular/core/bundles/core-testing.umd.js',
       '@angular/http/testing': 'node_modules/@angular/http/bundles/http-testing.umd.js',
+      'angular2-notifications': 'node_modules/angular2-notifications',
       '@angular/platform-browser/testing':
         'node_modules/@angular/platform-browser/bundles/platform-browser-testing.umd.js',
       '@angular/platform-browser-dynamic/testing':
@@ -400,6 +401,7 @@ export class SeedConfig {
       '*': 'node_modules/*'
     },
     packages: {
+      'angular2-notifications': { main: 'components.js', defaultExtension: 'js' },
     }
   };
 
