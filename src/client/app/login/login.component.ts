@@ -17,6 +17,7 @@ export class LoginComponent {
   loginSuccess() {
     console.info('[LoginComponent]: LoggedIn');
     this.isLoggedIn = true;
+    this._notificationsService.info('LogIn', 'Logged In');
   };
   isLoggedIn: boolean = false;
   dbs = [];
