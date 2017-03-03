@@ -15,7 +15,6 @@ import 'rxjs/add/operator/switchMap';
   template: `
     <div *ngIf="picking">
       <h3>Recepcion(#{{picking.id}}) [{{picking.partner_id[1]}}]</h3>
-      <p>picking detail {{picking.id}}</p>
     </div>
     <button (click)="goBack()" class="btn btn-primary">Back</button>
   ` ,
