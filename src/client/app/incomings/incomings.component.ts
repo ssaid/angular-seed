@@ -2,11 +2,9 @@ import { Component, OnInit } from '@angular/core';
 // import { odooService } from '../angular-odoo/odoo.service';
 // import 'rxjs/add/operator/toPromise';  // for debugging
 import { OpenService } from './open.service';
+import { Picking } from './classes';
+import { NotificationsService } from 'angular2-notifications';
 
-export class Picking{
-  id: number;
-  name: string;
-}
 
 /**
  * This class represents the lazy loaded LoginComponent.
@@ -19,6 +17,19 @@ export class Picking{
 })
 export class IncomingsComponent implements OnInit{
   rr: any;
+
+  handleError = (err: any) => {
+    console.warn('Error ', err);
+    this._notificationsService.error(err.title, err.message,
+    {
+        timeOut: 5000,
+        showProgressBar: true,
+        pauseOnHover: false,
+        clickToClose: false,
+        maxLength: 20
+    })
+  }
+
   ngOnInit(): void {
     console.info("[IncomingsComponent]: ngOnInit");
     this.getPickings();
@@ -27,8 +38,8 @@ export class IncomingsComponent implements OnInit{
     this.open.get_pickings_in()
       .then( (pickings: any) => {
         console.warn('rr:', pickings);
-      });
+      }, this.handleError);
   }
-  constructor(public open: OpenService){
+  constructor(public open: OpenService, private _notificationsService: NotificationsService){
   }
 }
