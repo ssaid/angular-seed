@@ -18,6 +18,12 @@ import { NotificationsService } from 'angular2-notifications';
 export class IncomingsComponent implements OnInit{
   rr: any;
   pickings: Picking[];
+  selectedPicking: Picking;
+
+  onSelect(p: Picking): void {
+    this.selectedPicking = p;
+    console.info(this);
+  }
 
   handleError = (err: any) => {
     console.warn('Error ', err);
