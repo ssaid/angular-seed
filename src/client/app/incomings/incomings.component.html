@@ -1,1 +1,15 @@
-Pickings de entrada
+<h3>Recepciones</h3>
+<table class="table">
+  <thead>
+    <th>#</th>
+    <th>Proveedor</th>
+    <th>Nombre</th>
+  </thead>
+    <tbody>
+      <tr *ngFor="let p of pickings">
+        <td>{{p.id}}</td>
+        <td>{{p.partner_id[1]}}</td>
+        <td>{{p.name}}</td>
+      </tr>
+    </tbody>
+</table>

@@ -17,6 +17,7 @@ import { NotificationsService } from 'angular2-notifications';
 })
 export class IncomingsComponent implements OnInit{
   rr: any;
+  pickings: Picking[];
 
   handleError = (err: any) => {
     console.warn('Error ', err);
@@ -38,6 +39,7 @@ export class IncomingsComponent implements OnInit{
     this.open.get_pickings_in()
       .then( (pickings: any) => {
         console.warn('rr:', pickings);
+        this.pickings = pickings;
       }, this.handleError);
   }
   constructor(public open: OpenService, private _notificationsService: NotificationsService){
