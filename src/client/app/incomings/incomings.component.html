@@ -9,7 +9,9 @@
       <tr *ngFor="let p of pickings" (click)="onSelect(p)">
         <td>{{p.id}}</td>
         <td>{{p.partner_id[1]}}</td>
-        <td>{{p.name}}</td>
+        <td>
+          <a [routerLink]="['/incomings', p.id]"  class="col-1-4">{{p.name}}</a>
+        </td>
       </tr>
     </tbody>
 </table>

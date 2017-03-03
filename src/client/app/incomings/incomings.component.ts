@@ -1,9 +1,42 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { ActivatedRoute, Params }   from '@angular/router';
+import { Location }                 from '@angular/common';
 // import { odooService } from '../angular-odoo/odoo.service';
 // import 'rxjs/add/operator/toPromise';  // for debugging
 import { OpenService } from './open.service';
 import { Picking } from './classes';
 import { NotificationsService } from 'angular2-notifications';
+import 'rxjs/add/operator/switchMap';
+
+
+@Component({
+  moduleId: module.id,
+  selector: 'incoming-detail',
+  template: `
+    <div *ngIf="picking">
+      <h3>Recepcion(#{{picking.id}}) [{{picking.partner_id[1]}}]</h3>
+      <p>picking detail {{picking.id}}</p>
+    </div>
+    <button (click)="goBack()" class="btn btn-primary">Back</button>
+  ` ,
+})
+export class IncomingsDetailComponent implements OnInit{ 
+  @Input() picking: Picking;
+  // picking: Picking;
+  constructor(
+    private openService: OpenService,
+    private route: ActivatedRoute,
+    private location: Location
+  ) {}
+  ngOnInit(): void {
+    this.route.params
+      .switchMap((params: Params) => this.openService.getPicking(+params['id']))
+      .subscribe(picking => this.picking = picking);
+  }
+  goBack(): void {
+    this.location.back();
+  }
+}
 
 
 /**

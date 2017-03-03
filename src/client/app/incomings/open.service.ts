@@ -16,4 +16,9 @@ export class OpenService {
         return pickings.records;
       });
   }
+  getPicking(id: number): Promise<Picking> {
+    console.info('getpicking', id);
+    return this.get_pickings_in()
+      .then(pickings => pickings.find(picking => picking.id === id));
+  }
 }
