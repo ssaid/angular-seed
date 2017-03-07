@@ -24,9 +24,11 @@ export class BarcodeDirective {
     }
   }
 
-  scanFinished(scanString: string) {
+  scanFinished(scannedString: string) {
     // console.warn('Scan finished -> ', this.scanBuffer);
-    this.onScannedString.emit(this.scanBuffer);
+    if (scannedString !== ''){
+      this.onScannedString.emit(scannedString);
+    }
   }
 
   @HostListener('document:keypress', ['$event'])
