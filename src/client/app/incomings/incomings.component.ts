@@ -13,7 +13,7 @@ import 'rxjs/add/operator/switchMap';
   moduleId: module.id,
   selector: 'incoming-detail',
   template: `
-    <div *ngIf="picking">
+    <div *ngIf="picking" [inputBarcode]="endKeyCode">
       <h3>Recepcion(#{{picking.id}}) [{{picking.partner_id[1]}}]</h3>
     </div>
     <button (click)="goBack()" class="btn btn-primary">Back</button>
