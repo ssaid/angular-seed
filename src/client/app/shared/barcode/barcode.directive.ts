@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, HostListener } from '@angular/core';
+import { Directive, ElementRef, Input, HostListener, Output, EventEmitter } from '@angular/core';
 
 @Directive({ 
   selector: '[inputBarcode]' 
@@ -6,6 +6,8 @@ import { Directive, ElementRef, Input, HostListener } from '@angular/core';
 export class BarcodeDirective {
   scanBuffer: string = '';
   @Input('inputBarcode') endKeyCode: string;
+  @Output() 
+  onScannedString: EventEmitter<string> = new EventEmitter<string>();
 
   constructor() {
   }
@@ -23,7 +25,8 @@ export class BarcodeDirective {
   }
 
   scanFinished(scanString: string) {
-    console.warn('Scan finished -> ', this.scanBuffer);
+    // console.warn('Scan finished -> ', this.scanBuffer);
+    this.onScannedString.emit(this.scanBuffer);
   }
 
   @HostListener('document:keypress', ['$event'])
