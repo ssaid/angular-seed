@@ -13,8 +13,9 @@ import 'rxjs/add/operator/switchMap';
   moduleId: module.id,
   selector: 'incoming-detail',
   template: `
-    <div *ngIf="picking" [inputBarcode]="endKeyCode" (onScannedString)="onScanned($event)">
+    <div *ngIf="picking">
       <h3>Recepcion(#{{picking.id}}) [{{picking.partner_id[1]}}]</h3>
+      <input-barcode [endKeyCode]="13" (onScannedString)="onScanned($event)"></input-barcode>
     </div>
     <button (click)="goBack()" class="btn btn-primary">Back</button>
   ` ,
@@ -22,7 +23,8 @@ import 'rxjs/add/operator/switchMap';
 export class IncomingsDetailComponent implements OnInit{ 
   @Input() picking: Picking;
   onScanned(event: string) {
-    console.log('Scan finish: ', event);  
+    console.log('Scanned item --> ', event);  
+    // do magic
   }
   // picking: Picking;
   constructor(

@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { IncomingsComponent, IncomingsDetailComponent } from './incomings.component';
 import { IncomingsRoutingModule } from './incomings-routing.module';
 import { FormsModule } from '@angular/forms';
-import { BarcodeDirective } from '../shared/barcode/barcode.directive';
+import { BarcodeComponent } from '../shared/barcode/barcode.directive';
 
 @NgModule({
   imports: [CommonModule, IncomingsRoutingModule, FormsModule],
-  declarations: [IncomingsComponent, IncomingsDetailComponent, BarcodeDirective],
+  declarations: [IncomingsComponent, IncomingsDetailComponent, BarcodeComponent],
   exports: [IncomingsComponent, IncomingsDetailComponent]
 })
 export class IncomingsModule { }
