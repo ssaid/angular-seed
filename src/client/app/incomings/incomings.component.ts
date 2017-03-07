@@ -22,16 +22,29 @@ import { odooService } from '../angular-odoo/odoo.service';
 })
 export class IncomingsDetailComponent implements OnInit{ 
   @Input() picking: Picking;
+  handleError = (err) => {
+    console.warn('Error ', err);
+    this._notificationsService.error(err.title, err.message,
+    {
+        timeOut: 5000,
+        showProgressBar: true,
+        pauseOnHover: false,
+        clickToClose: false,
+        maxLength: 20
+    })
+  }
+  handleResponse = (x) => {
+    console.info('Response ', x);
+    if (x.state === 'fail'){
+      this._notificationsService.error('Error', x.msg);
+    }
+    else{
+      this._notificationsService.success('Success', x.msg);
+    }
+  }
   onScanned(event: string) {
     console.log('Scanned item --> ', event);  
-    this.odoo.call('stock.picking.in', 'jenck_receive_product', [this.picking.id], {scan: event}).then(
-      x => {
-        console.log(x);
-      },
-      (err) => {
-        console.log(err);
-      })
-    // do magic
+    this.odoo.call('stock.picking.in', 'jenck_receive_product', [this.picking.id], {scan: event}).then(this.handleResponse, this.handleError);
   }
   // picking: Picking;
   constructor(
@@ -39,6 +52,7 @@ export class IncomingsDetailComponent implements OnInit{
     private route: ActivatedRoute,
     private location: Location,
     public odoo: odooService,
+    private _notificationsService: NotificationsService,
   ) {}
   ngOnInit(): void {
     this.route.params
