@@ -1,12 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute, Params }   from '@angular/router';
 import { Location }                 from '@angular/common';
-// import { odooService } from '../angular-odoo/odoo.service';
 // import 'rxjs/add/operator/toPromise';  // for debugging
 import { OpenService } from './open.service';
 import { Picking } from './classes';
 import { NotificationsService } from 'angular2-notifications';
 import 'rxjs/add/operator/switchMap';
+import { odooService } from '../angular-odoo/odoo.service';
 
 
 @Component({
@@ -24,13 +24,21 @@ export class IncomingsDetailComponent implements OnInit{
   @Input() picking: Picking;
   onScanned(event: string) {
     console.log('Scanned item --> ', event);  
+    this.odoo.call('stock.picking.in', 'jenck_receive_product', [this.picking.id], {scan: event}).then(
+      x => {
+        console.log(x);
+      },
+      (err) => {
+        console.log(err);
+      })
     // do magic
   }
   // picking: Picking;
   constructor(
     private openService: OpenService,
     private route: ActivatedRoute,
-    private location: Location
+    private location: Location,
+    public odoo: odooService,
   ) {}
   ngOnInit(): void {
     this.route.params
