@@ -13,15 +13,31 @@ import { odooService } from '../angular-odoo/odoo.service';
   moduleId: module.id,
   selector: 'incoming-detail',
   template: `
-    <div *ngIf="picking">
-      <h3>Recepcion(#{{picking.id}}) [{{picking.partner_id[1]}}]</h3>
-      <input-barcode [endKeyCode]="13" (onScannedString)="onScanned($event)"></input-barcode>
+    <div class="row">
+      <div *ngIf="picking">
+        <h3>Recepcion(#{{picking.id}}) [{{picking.partner_id[1]}}]</h3>
+        <input-barcode [barcodeReaderOn]="barcodeReaderOn" [endKeyCode]="13" (onScannedString)="onScanned($event)"></input-barcode>
+      </div>
     </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="input-group">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button">Cambiar Cantidad</button>
+          </span>
+          <input type="text" class="form-control" placeholder="Cantidad" [(ngModel)]="qty" readonly>
+        </div><!-- /input-group -->
+      </div><!-- /.col-md-6 --> 
+    </div>
+
     <button (click)="goBack()" class="btn btn-primary">Back</button>
   ` ,
 })
 export class IncomingsDetailComponent implements OnInit{ 
   @Input() picking: Picking;
+  qty: number = 1;
+  askQty: boolean = false;
+  barcodeReaderOn: boolean = false;
   handleError = (err) => {
     console.warn('Error ', err);
     this._notificationsService.error(err.title, err.message,
@@ -44,7 +60,7 @@ export class IncomingsDetailComponent implements OnInit{
   }
   onScanned(event: string) {
     console.log('Scanned item --> ', event);  
-    this.odoo.call('stock.picking.in', 'jenck_receive_product', [this.picking.id], {scan: event}).then(this.handleResponse, this.handleError);
+    this.odoo.call('stock.picking.in', 'jenck_receive_product', [this.picking.id], {scan: event, context: {'qty': 1}}).then(this.handleResponse, this.handleError);
   }
   // picking: Picking;
   constructor(

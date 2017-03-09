@@ -1,11 +1,10 @@
-import { Component, Directive, ElementRef, Input, HostListener, Output, EventEmitter } from '@angular/core';
+import { Component, Directive, ElementRef, Input, HostListener, Output, EventEmitter, OnChanges, SimpleChange } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({ 
   moduleId: module.id,
   selector: 'input-barcode',
   template: `
-    barcode...
     <div class="row">
     <div class="col-lg-6">
         <div class="input-group">
@@ -23,12 +22,15 @@ import { FormsModule } from '@angular/forms';
   `,
 
 })
-export class BarcodeComponent {
+export class BarcodeComponent implements OnChanges {
   scanBuffer: string = '';
-  barcodeReaderOn: boolean = true;
+  @Input() barcodeReaderOn: boolean = true;
   @Input() endKeyCode: string;
-  @Output() 
-  onScannedString: EventEmitter<string> = new EventEmitter<string>();
+  @Output() onScannedString: EventEmitter<string> = new EventEmitter<string>();
+
+  ngOnChanges(changes: {[propKey: string]: SimpleChange}) {
+    console.info(changes);
+  }
 
   switchOnScanner() {
     this.barcodeReaderOn = true;
