@@ -49,7 +49,7 @@ export class IncomingsDetailComponent implements OnInit{
       this.qty = result;
     });
   }
-  handleError = (err) => {
+  handleError = (err: any) => {
     console.warn('Error ', err);
     this._notificationsService.error(err.title, err.message,
     {
@@ -60,7 +60,7 @@ export class IncomingsDetailComponent implements OnInit{
         maxLength: 20
     })
   }
-  handleResponse = (x) => {
+  handleResponse = (x: any) => {
     console.info('Response ', x);
     if (x.state === 'fail'){
       this._notificationsService.error('Error', x.msg);
@@ -71,7 +71,7 @@ export class IncomingsDetailComponent implements OnInit{
   }
   onScanned(event: string) {
     console.log('Scanned item --> ', event);  
-    this.odoo.call('stock.picking.in', 'jenck_receive_product', [this.picking.id], {scan: event, context: {'qty': 1}}).then(this.handleResponse, this.handleError);
+    this.odoo.call('stock.picking.in', 'jenck_receive_product', [this.picking.id], {scan: event, context: {'qty': this.qty}}).then(this.handleResponse, this.handleError);
   }
   // picking: Picking;
   constructor(
