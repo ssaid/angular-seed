@@ -19,6 +19,7 @@ import {MdDialog, MdDialogRef} from '@angular/material';
         <h3>Recepcion(#{{picking.id}}) [{{picking.partner_id[1]}}]</h3>
         <input-barcode [barcodeReaderOn]="barcodeReaderOn" [endKeyCode]="13" (onScannedString)="onScanned($event)"></input-barcode>
         <button md-button color="primary" (click)="askQuantity()">Cantidad: {{qty}}</button>
+        <button md-button color="primary" (click)="switchBarcodeMode()">Cambiar modo</button>
       </div>
     </div>
     <button (click)="goBack()" class="btn btn-primary">Back</button>
@@ -30,7 +31,19 @@ export class IncomingsDetailComponent implements OnInit{
   askQty: boolean = false;
   barcodeReaderOn: boolean = false;
   prevBarcodeState: boolean = false;
+  switchBarcodeMode() {
+    if (this.barcodeReaderOn) {
+      this.barcodeReaderOn = false;
+    }
+    else {
+      this.barcodeReaderOn = true;
+    }
+    // this.barcodeReaderOn = !this.barcodeReaderOn;
+  }
   askQuantity() {
+    if (this.barcodeReaderOn) {
+      this.barcodeReaderOn = false;
+    }
     let dialogRef = this.dialog.open(DialogAskQuantity);
     dialogRef.afterClosed().subscribe(result => {
       this.qty = result;
@@ -134,7 +147,7 @@ export class IncomingsComponent implements OnInit{
   template: `
   <h1 md-dialog-title>Cantidad</h1>
   <md-input-container class="example-full-width">
-    <input mdInput placeholder="Cantidad a ingresar" #qtyInput>
+    <input mdInput placeholder="Cantidad a ingresar" #qtyInput (keypress)="keyHandler($event)">
   </md-input-container>
   <div md-dialog-actions>
     <button md-button (click)="dialogRef.close(qtyInput.value)">Validar</button>
@@ -143,5 +156,8 @@ export class IncomingsComponent implements OnInit{
 })
 export class DialogAskQuantity {
   constructor(public dialogRef: MdDialogRef<DialogAskQuantity>) {
+  }
+  keyHandler (event: KeyboardEvent){
+    event.stopPropagation();  // Prevent the barcode listener of handling the event (because this is not a barcode)
   }
 }
