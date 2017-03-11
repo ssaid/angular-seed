@@ -72,7 +72,7 @@ export class IncomingsDetailComponent implements OnInit{
       'stock.picking.in', 
       'jenck_receive_product', 
       [this.picking.id], 
-      {scan: event, context: {'qty': this.qty}})
+      {scan: event, context: {'qty': this.qty, 'mode': 'match_regex'}})
       .then(this.handleResponse, this.handleError);
   }
   // picking: Picking;
