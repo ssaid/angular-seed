@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, NgZone } from '@angular/core';
 import { ActivatedRoute, Params }   from '@angular/router';
 import { Location }                 from '@angular/common';
 // import 'rxjs/add/operator/toPromise';  // for debugging
@@ -7,6 +7,7 @@ import { Picking } from './classes';
 import { NotificationsService } from 'angular2-notifications';
 import 'rxjs/add/operator/switchMap';
 import { odooService } from '../angular-odoo/odoo.service';
+import {MdDialog, MdDialogRef} from '@angular/material';
 
 
 @Component({
@@ -17,19 +18,9 @@ import { odooService } from '../angular-odoo/odoo.service';
       <div *ngIf="picking">
         <h3>Recepcion(#{{picking.id}}) [{{picking.partner_id[1]}}]</h3>
         <input-barcode [barcodeReaderOn]="barcodeReaderOn" [endKeyCode]="13" (onScannedString)="onScanned($event)"></input-barcode>
+        <button md-button color="primary" (click)="askQuantity()">Cantidad: {{qty}}</button>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-6">
-        <div class="input-group">
-          <span class="input-group-btn">
-            <button class="btn btn-default" type="button">Cambiar Cantidad</button>
-          </span>
-          <input type="text" class="form-control" placeholder="Cantidad" [(ngModel)]="qty" readonly>
-        </div><!-- /input-group -->
-      </div><!-- /.col-md-6 --> 
-    </div>
-
     <button (click)="goBack()" class="btn btn-primary">Back</button>
   ` ,
 })
@@ -38,6 +29,13 @@ export class IncomingsDetailComponent implements OnInit{
   qty: number = 1;
   askQty: boolean = false;
   barcodeReaderOn: boolean = false;
+  prevBarcodeState: boolean = false;
+  askQuantity() {
+    let dialogRef = this.dialog.open(DialogAskQuantity);
+    dialogRef.afterClosed().subscribe(result => {
+      this.qty = result;
+    });
+  }
   handleError = (err) => {
     console.warn('Error ', err);
     this._notificationsService.error(err.title, err.message,
@@ -69,6 +67,9 @@ export class IncomingsDetailComponent implements OnInit{
     private location: Location,
     public odoo: odooService,
     private _notificationsService: NotificationsService,
+    public dialog: MdDialog,
+    private ref: ChangeDetectorRef,
+    public zone: NgZone,
   ) {}
   ngOnInit(): void {
     this.route.params
@@ -124,5 +125,23 @@ export class IncomingsComponent implements OnInit{
       }, this.handleError);
   }
   constructor(public open: OpenService, private _notificationsService: NotificationsService){
+  }
+}
+
+
+@Component({
+  selector: 'dialog-ask-quantity',
+  template: `
+  <h1 md-dialog-title>Cantidad</h1>
+  <md-input-container class="example-full-width">
+    <input mdInput placeholder="Cantidad a ingresar" #qtyInput>
+  </md-input-container>
+  <div md-dialog-actions>
+    <button md-button (click)="dialogRef.close(qtyInput.value)">Validar</button>
+  </div>
+  `,
+})
+export class DialogAskQuantity {
+  constructor(public dialogRef: MdDialogRef<DialogAskQuantity>) {
   }
 }

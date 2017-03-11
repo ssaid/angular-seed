@@ -5,20 +5,13 @@ import { FormsModule } from '@angular/forms';
   moduleId: module.id,
   selector: 'input-barcode',
   template: `
-    <div class="row">
-    <div class="col-lg-6">
-        <div class="input-group">
-            <div class="input-group-btn">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{barcodeReaderOn === true ? "Automatic detection" : "Manual detection"}}<span class="caret"></span></button>
-                <ul class="dropdown-menu">
-                    <li (click)="switchOnScanner()" [ngClass]="{'disabled': barcodeReaderOn===true}"><a>Automatic Scanner</a></li>
-                    <li (click)="switchOffScanner()" [ngClass]="{'disabled': barcodeReaderOn===false}"><a>Manual Scanner</a></li>
-                </ul>
-            </div><!-- /btn-group -->
-            <input type="text" class="form-control" aria-label="..." placeholder="Barcode" [disabled]="barcodeReaderOn" [(ngModel)]="scanBuffer" (keyup.enter)="scanFinished(scanBuffer)">
-        </div><!-- /input-group -->
-    </div><!-- /.col-lg-6 -->
-  </div>
+  <md-card>
+      <md-slide-toggle [(ngModel)]="barcodeReaderOn">Automatic Scanner</md-slide-toggle>
+
+      <md-input-container class="example-full-width">
+        <input mdInput placeholder="Barcode" [disabled]="barcodeReaderOn" value="Google" [(ngModel)]="scanBuffer" (keyup.enter)="scanFinished(scanBuffer)">
+      </md-input-container>
+  </md-card>
   `,
 
 })

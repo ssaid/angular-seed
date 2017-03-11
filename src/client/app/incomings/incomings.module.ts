@@ -4,10 +4,13 @@ import { IncomingsComponent, IncomingsDetailComponent } from './incomings.compon
 import { IncomingsRoutingModule } from './incomings-routing.module';
 import { FormsModule } from '@angular/forms';
 import { BarcodeComponent } from '../shared/barcode/barcode.directive';
+import { MaterialModule } from '@angular/material';
+import { DialogAskQuantity } from './incomings.component';
 
 @NgModule({
-  imports: [CommonModule, IncomingsRoutingModule, FormsModule],
-  declarations: [IncomingsComponent, IncomingsDetailComponent, BarcodeComponent],
-  exports: [IncomingsComponent, IncomingsDetailComponent]
+  imports: [CommonModule, IncomingsRoutingModule, FormsModule, MaterialModule],
+  declarations: [IncomingsComponent, IncomingsDetailComponent, BarcodeComponent, DialogAskQuantity],
+  exports: [IncomingsComponent, IncomingsDetailComponent],
+  entryComponents: [DialogAskQuantity],
 })
 export class IncomingsModule { }
