@@ -41,12 +41,9 @@ export class IncomingsDetailComponent implements OnInit{
     // this.barcodeReaderOn = !this.barcodeReaderOn;
   }
   askQuantity() {
-    if (this.barcodeReaderOn) {
-      this.barcodeReaderOn = false;
-    }
     let dialogRef = this.dialog.open(DialogAskQuantity);
     dialogRef.afterClosed().subscribe(result => {
-      this.qty = result;
+      this.qty = parseInt(result)||1;
     });
   }
   handleError = (err: any) => {
@@ -71,7 +68,12 @@ export class IncomingsDetailComponent implements OnInit{
   }
   onScanned(event: string) {
     console.log('Scanned item --> ', event);  
-    this.odoo.call('stock.picking.in', 'jenck_receive_product', [this.picking.id], {scan: event, context: {'qty': this.qty}}).then(this.handleResponse, this.handleError);
+    this.odoo.call(
+      'stock.picking.in', 
+      'jenck_receive_product', 
+      [this.picking.id], 
+      {scan: event, context: {'qty': this.qty}})
+      .then(this.handleResponse, this.handleError);
   }
   // picking: Picking;
   constructor(
