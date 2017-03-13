@@ -37,14 +37,6 @@ export class BarcodeComponent implements OnChanges {
     console.info(changes);
   }
 
-  switchOnScanner() {
-    this.barcodeReaderOn = true;
-  }
-
-  switchOffScanner() {
-    this.barcodeReaderOn = false;
-  }
-
   constructor() {
   }
 
