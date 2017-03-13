@@ -18,8 +18,13 @@ import {MdDialog, MdDialogRef} from '@angular/material';
       <div *ngIf="picking">
         <h3>Recepcion(#{{picking.id}}) [{{picking.partner_id[1]}}]</h3>
         <input-barcode [barcodeReaderOn]="barcodeReaderOn" [endKeyCode]="13" (onScannedString)="onScanned($event)"></input-barcode>
-        <button md-button color="primary" (click)="askQuantity()">Cantidad: {{qty}}</button>
-        <button md-button color="primary" (click)="switchBarcodeMode()">Cambiar modo</button>
+        <div class="panel panel-default">
+          <div class="panel-heading">Configuración</div>
+          <div class="panel-body">
+            Cantidad: <strong>{{qty}}</strong>
+            <button type="button" class="btn btn-primary" (click)="askQuantity()">Cambiar Cantidad</button>
+          </div>
+        </div>
       </div>
     </div>
     <button (click)="goBack()" class="btn btn-primary">Back</button>
