@@ -5,12 +5,12 @@ import { IncomingsRoutingModule } from './incomings-routing.module';
 import { FormsModule } from '@angular/forms';
 import { BarcodeComponent } from '../shared/barcode/barcode.component';
 import { MaterialModule } from '@angular/material';
-import { DialogAskQuantity } from './incomings.component';
+import { DialogAskQuantity, DialogAskLot } from './incomings.component';
 
 @NgModule({
   imports: [CommonModule, IncomingsRoutingModule, FormsModule, MaterialModule],
-  declarations: [IncomingsComponent, IncomingsDetailComponent, BarcodeComponent, DialogAskQuantity],
+  declarations: [IncomingsComponent, IncomingsDetailComponent, BarcodeComponent, DialogAskQuantity, DialogAskLot],
   exports: [IncomingsComponent, IncomingsDetailComponent],
-  entryComponents: [DialogAskQuantity],
+  entryComponents: [DialogAskQuantity, DialogAskLot],
 })
 export class IncomingsModule { }

@@ -23,6 +23,11 @@ import {MdDialog, MdDialogRef} from '@angular/material';
           <div class="panel-body">
             Cantidad: <strong>{{qty}}</strong>
             <button type="button" class="btn btn-primary" (click)="askQuantity()">Cambiar Cantidad</button>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" [(ngModel)]="askLotFlag"> Solicitar Lote
+                </label>
+              </div>
           </div>
         </div>
       </div>
@@ -34,6 +39,7 @@ export class IncomingsDetailComponent implements OnInit{
   @Input() picking: Picking;
   qty: number = 1;
   askQty: boolean = false;
+  askLotFlag: boolean = false;
   barcodeReaderOn: boolean = false;
   prevBarcodeState: boolean = false;
   switchBarcodeMode() {
@@ -43,7 +49,6 @@ export class IncomingsDetailComponent implements OnInit{
     else {
       this.barcodeReaderOn = true;
     }
-    // this.barcodeReaderOn = !this.barcodeReaderOn;
   }
   askQuantity() {
     let dialogRef = this.dialog.open(DialogAskQuantity);
@@ -73,12 +78,26 @@ export class IncomingsDetailComponent implements OnInit{
   }
   onScanned(event: string) {
     console.log('Scanned item --> ', event);  
-    this.odoo.call(
-      'stock.picking.in', 
-      'jenck_receive_product', 
-      [this.picking.id], 
-      {scan: event, context: {'qty': this.qty, 'mode': 'match_regex'}})
-      .then(this.handleResponse, this.handleError);
+    if (this.askLotFlag) {
+      let dialogRef = this.dialog.open(DialogAskLot);
+      dialogRef.afterClosed().subscribe(result => {
+        console.log(event, result, this.qty);
+        this.odoo.call(
+          'stock.picking.in', 
+          'jenck_receive_product', 
+          [this.picking.id], 
+          {'part_number': event, 'lot_name': result, context: {'qty': this.qty, 'mode': 'simple'}})
+          .then(this.handleResponse, this.handleError);
+        });
+    }
+    else {
+      this.odoo.call(
+        'stock.picking.in', 
+        'jenck_receive_product', 
+        [this.picking.id], 
+        {scan: event, context: {'qty': this.qty, 'mode': 'match_regex'}})
+        .then(this.handleResponse, this.handleError);
+    }
   }
   // picking: Picking;
   constructor(
@@ -163,6 +182,27 @@ export class IncomingsComponent implements OnInit{
 })
 export class DialogAskQuantity {
   constructor(public dialogRef: MdDialogRef<DialogAskQuantity>) {
+  }
+  keyHandler (event: KeyboardEvent){
+    event.stopPropagation();  // Prevent the barcode listener of handling the event (because this is not a barcode)
+  }
+}
+
+
+@Component({
+  selector: 'dialog-ask-lot',
+  template: `
+  <h1 md-dialog-title>Numero de serie</h1>
+  <md-input-container class="example-full-width">
+    <input mdInput placeholder="Lote" #lotName (keypress)="keyHandler($event)">
+  </md-input-container>
+  <div md-dialog-actions>
+    <button md-button (click)="dialogRef.close(lotName.value)">Validar</button>
+  </div>
+  `,
+})
+export class DialogAskLot {
+  constructor(public dialogRef: MdDialogRef<DialogAskLot>) {
   }
   keyHandler (event: KeyboardEvent){
     event.stopPropagation();  // Prevent the barcode listener of handling the event (because this is not a barcode)
