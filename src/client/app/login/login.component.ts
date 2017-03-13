@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { odooService } from '../angular-odoo/odoo.service';
 import 'rxjs/add/operator/toPromise';  // for debugging
 import { NotificationsService } from 'angular2-notifications';
+import { Router } from '@angular/router';
 
 /**
  * This class represents the lazy loaded LoginComponent.
@@ -18,6 +19,7 @@ export class LoginComponent {
     console.info('[LoginComponent]: LoggedIn');
     this.isLoggedIn = true;
     this._notificationsService.info('LogIn', 'Logged In');
+    this.router.navigateByUrl('/incomings');
   };
   isLoggedIn: boolean = false;
   dbs = [];
@@ -25,7 +27,7 @@ export class LoginComponent {
   separator = ' ';
   handleError = null;
 
-  constructor(public odoo: odooService, private _notificationsService: NotificationsService){
+  constructor(public odoo: odooService, private _notificationsService: NotificationsService, public router: Router){
   var defaultDb = null;
   this.handleError = (err) => {
     console.warn('Error ', err);
