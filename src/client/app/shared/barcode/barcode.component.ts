@@ -14,8 +14,8 @@ import { FormsModule } from '@angular/forms';
                   <div class="input-group-btn">
                       <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{barcodeReaderOn === true ? "Automatic detection" : "Manual detection"}}<span class="caret"></span></button>
                       <ul class="dropdown-menu">
-                          <li (click)="barcodeReaderOn=true" ng-class="{'disabled': barcodeReaderOn===true}"><a>Automatic Scanner</a></li>
-                          <li (click)="barcodeReaderOn=false" ng-class="{'disabled': barcodeReaderOn===false}"><a>Manual Scanner</a></li>
+                          <li (click)="barcodeReaderOn=true" [class.disabled]="barcodeReaderOn"><a>Automatic Scanner</a></li>
+                          <li (click)="barcodeReaderOn=false" [class.disabled]="!barcodeReaderOn"><a>Manual Scanner</a></li>
                       </ul>
                   </div><!-- /btn-group -->
                   <input type="text" class="form-control" placeholder="Barcode" [disabled]="barcodeReaderOn" [(ngModel)]="scanBuffer" (keyup.enter)="scanFinished(scanBuffer)">
