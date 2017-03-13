@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { IncomingsComponent, IncomingsDetailComponent } from './incomings.component';
 import { IncomingsRoutingModule } from './incomings-routing.module';
 import { FormsModule } from '@angular/forms';
-import { BarcodeComponent } from '../shared/barcode/barcode.directive';
+import { BarcodeComponent } from '../shared/barcode/barcode.component';
 import { MaterialModule } from '@angular/material';
 import { DialogAskQuantity } from './incomings.component';
 
