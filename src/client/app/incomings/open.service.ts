@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { odooService } from '../angular-odoo/odoo.service';
-import { Picking } from './classes';
+import { Picking, Configuration } from './classes';
 
 
 @Injectable()
@@ -20,5 +20,12 @@ export class OpenService {
     console.info('getpicking', id);
     return this.get_pickings_in()
       .then(pickings => pickings.find(picking => picking.id === id));
+  }
+  getConfigurations(): Promise<Configuration[]> {
+    return this.odoo.searchRead('stock.regex.config', [], ['name', 'regex_pn', 'regex_ln', 'regex_expdate', 'use_2scan'])
+      .then( (configurations: any) => {
+        console.log('[OpenService]: ', configurations);
+        return configurations.records;
+      });
   }
 }

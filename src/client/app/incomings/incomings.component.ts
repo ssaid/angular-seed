@@ -1,13 +1,59 @@
-import { Component, OnInit, Input, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, NgZone, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Params }   from '@angular/router';
 import { Location }                 from '@angular/common';
 // import 'rxjs/add/operator/toPromise';  // for debugging
 import { OpenService } from './open.service';
-import { Picking } from './classes';
+import { Picking, Configuration } from './classes';
 import { NotificationsService } from 'angular2-notifications';
 import 'rxjs/add/operator/switchMap';
 import { odooService } from '../angular-odoo/odoo.service';
 import {MdDialog, MdDialogRef} from '@angular/material';
+
+@Component({
+  moduleId: module.id,
+  selector: 'regex-configuration',
+  template: `
+<div class="row" *ngIf="selectedConf">
+  <!-- Single button -->
+  <div class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <span *ngIf="!selectedConf">--- <span class="caret"></span></span>
+      <span *ngIf="selectedConf">{{selectedConf.name}} <span class="caret"></span></span>
+    </button>
+    <ul class="dropdown-menu">
+      <li *ngFor="let conf of configurations" (click)="selectConf(conf)"><a>{{conf.name}}</a></li>
+    </ul>
+  </div>
+</div>
+  `
+})
+export class RegexConfigurationComponent implements OnInit{
+  configurations: Configuration[];
+  selectedConf: Configuration;
+  @Output() confUpdated = new EventEmitter();
+
+  constructor(
+    private open: OpenService,
+  ) {}
+  selectConf(conf: Configuration): void {
+    this.selectedConf = conf;
+    this.confUpdated.emit(conf);
+  };
+  setDefaultConf(): void {
+    this.selectConf(this.configurations[0]);
+  };
+  getConfigurations(): void {
+    this.open.getConfigurations()
+      .then( (configurations: Configuration[]) => {
+        this.configurations = configurations;
+        this.selectConf(this.configurations[0]);
+      }, (e) => console.warn(e))
+  }
+  ngOnInit(): void {
+    console.info("[RegexConfigurationComponent]: ngOnInit");
+    this.getConfigurations();
+  }
+}
 
 
 @Component({
@@ -33,6 +79,7 @@ import {MdDialog, MdDialogRef} from '@angular/material';
       </div>
     </div>
     <button (click)="goBack()" class="btn btn-primary">Back</button>
+    <regex-configuration (confUpdated)="handleConfUpdated($event)"></regex-configuration>
   ` ,
 })
 export class IncomingsDetailComponent implements OnInit{ 
@@ -50,6 +97,9 @@ export class IncomingsDetailComponent implements OnInit{
       this.barcodeReaderOn = true;
     }
   }
+  handleConfUpdated(conf: Configuration) {
+    console.info(conf);
+  };
   askQuantity() {
     let dialogRef = this.dialog.open(DialogAskQuantity);
     dialogRef.afterClosed().subscribe(result => {
