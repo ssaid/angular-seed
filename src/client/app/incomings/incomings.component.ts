@@ -14,15 +14,31 @@ import {MdDialog, MdDialogRef} from '@angular/material';
   selector: 'regex-configuration',
   template: `
 <div class="row" *ngIf="selectedConf">
-  <!-- Single button -->
-  <div class="btn-group">
-    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <span *ngIf="!selectedConf">--- <span class="caret"></span></span>
-      <span *ngIf="selectedConf">{{selectedConf.name}} <span class="caret"></span></span>
-    </button>
-    <ul class="dropdown-menu">
-      <li *ngFor="let conf of configurations" (click)="selectConf(conf)"><a>{{conf.name}}</a></li>
-    </ul>
+  <div class="panel panel-default">
+    <div class="panel-heading">RegEx Configuration
+      <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span *ngIf="!selectedConf">--- <span class="caret"></span></span>
+          <span *ngIf="selectedConf">{{selectedConf.name}} <span class="caret"></span></span>
+        </button>
+        <ul class="dropdown-menu">
+          <li *ngFor="let conf of configurations" (click)="selectConf(conf)"><a>{{conf.name}}</a></li>
+        </ul>
+      </div> 
+    </div>
+    <div class="panel-body">
+      
+    </div>
+    <dl class="dl-horizontal">
+      <dt>Regex Lot<dt>
+      <dd>{{selectedConf.regex_ln}}</dd>
+      <dt>Regex P/N</dt>
+      <dd>{{selectedConf.regex_pn}}</dd>
+      <dt>Regex Exp. Date</dt>
+      <dd>{{selectedConf.regex_expdate}}</dd>
+      <dt>Segundo Escaneo</dt>
+      <dd>{{selectedConf.use_2scan}}</dd>
+    </dl>
   </div>
 </div>
   `
