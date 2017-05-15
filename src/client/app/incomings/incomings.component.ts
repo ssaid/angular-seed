@@ -47,11 +47,16 @@ export class RegexConfigurationComponent implements OnInit{
   configurations: Configuration[];
   selectedConf: Configuration;
   @Output() confUpdated = new EventEmitter();
+  @Input() scanInProcess: boolean = false;
 
   constructor(
     private open: OpenService,
   ) {}
   selectConf(conf: Configuration): void {
+    if (this.scanInProcess){
+      window.alert('Hay un escaneo en proceso, finalize el escaneo o aborte la operación. No se cambio la configuración.');
+      return;
+    }
     this.selectedConf = conf;
     this.confUpdated.emit(conf);
   };
@@ -79,6 +84,7 @@ export class RegexConfigurationComponent implements OnInit{
     <div class="row">
       <div *ngIf="picking">
         <h3>Recepcion(#{{picking.id}}) [{{picking.partner_id[1]}}]</h3>
+        <h4>Configuración: {{currentConfig.name}}</h4>
         <input-barcode [barcodeReaderOn]="barcodeReaderOn" [endKeyCode]="13" (onScannedString)="onScanned($event)"></input-barcode>
         <div class="panel panel-default">
           <div class="panel-heading">Configuración</div>
@@ -95,7 +101,7 @@ export class RegexConfigurationComponent implements OnInit{
       </div>
     </div>
     <button (click)="goBack()" class="btn btn-primary">Back</button>
-    <regex-configuration (confUpdated)="handleConfUpdated($event)"></regex-configuration>
+    <regex-configuration (confUpdated)="handleConfUpdated($event)" [scanInProcess]="scanInProcess"></regex-configuration>
   ` ,
 })
 export class IncomingsDetailComponent implements OnInit{ 
@@ -105,6 +111,8 @@ export class IncomingsDetailComponent implements OnInit{
   askLotFlag: boolean = false;
   barcodeReaderOn: boolean = false;
   prevBarcodeState: boolean = false;
+  currentConfig: Configuration;
+  scanInProcess: boolean = false;
   switchBarcodeMode() {
     if (this.barcodeReaderOn) {
       this.barcodeReaderOn = false;
@@ -115,6 +123,7 @@ export class IncomingsDetailComponent implements OnInit{
   }
   handleConfUpdated(conf: Configuration) {
     console.info(conf);
+    this.currentConfig = conf;
   };
   askQuantity() {
     let dialogRef = this.dialog.open(DialogAskQuantity);
