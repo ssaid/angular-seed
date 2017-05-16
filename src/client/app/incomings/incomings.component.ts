@@ -84,7 +84,7 @@ export class RegexConfigurationComponent implements OnInit{
     <div class="row">
       <div *ngIf="picking">
         <h3>Recepcion(#{{picking.id}}) [{{picking.partner_id[1]}}]</h3>
-        <h4>Configuración: {{currentConfig.name}}</h4>
+        <h4 *ngIf="currentConfig">Configuración: {{currentConfig.name}}</h4>
         <input-barcode [barcodeReaderOn]="barcodeReaderOn" [endKeyCode]="13" (onScannedString)="onScanned($event)"></input-barcode>
         <div class="panel panel-default">
           <div class="panel-heading">Configuración</div>
