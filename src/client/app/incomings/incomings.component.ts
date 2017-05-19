@@ -3,7 +3,7 @@ import { ActivatedRoute, Params }   from '@angular/router';
 import { Location }                 from '@angular/common';
 // import 'rxjs/add/operator/toPromise';  // for debugging
 import { OpenService } from './open.service';
-import { Picking, Configuration } from './classes';
+import { Picking, Configuration, CurrentScan } from './classes';
 import { NotificationsService } from 'angular2-notifications';
 import 'rxjs/add/operator/switchMap';
 import { odooService } from '../angular-odoo/odoo.service';
@@ -82,36 +82,41 @@ export class RegexConfigurationComponent implements OnInit{
   selector: 'incoming-detail',
   template: `
     <div class="row">
-      <div *ngIf="picking">
-        <h3>Recepcion(#{{picking.id}}) [{{picking.partner_id[1]}}]</h3>
-        <h4 *ngIf="currentConfig">Configuración: {{currentConfig.name}}</h4>
-        <input-barcode [barcodeReaderOn]="barcodeReaderOn" [endKeyCode]="13" (onScannedString)="onScanned($event)"></input-barcode>
-        <div class="panel panel-default">
-          <div class="panel-heading">Configuración</div>
-          <div class="panel-body">
-            Cantidad: <strong>{{qty}}</strong>
-            <button type="button" class="btn btn-primary" (click)="askQuantity()">Cambiar Cantidad</button>
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" [(ngModel)]="askLotFlag"> Solicitar Lote
-                </label>
-              </div>
+      <div *ngIf="picking && currentConfig">
+        <div class="col-md-12">
+          <h3 class="text-center">Recepcion(#{{picking.id}}) [{{picking.partner_id[1]}}]<span class="label label-info" *ngIf="scanInProcess">Escaneo en proceso</span> </h3>
+          <input-barcode [barcodeReaderOn]="barcodeReaderOn" [endKeyCode]="13" (onScannedString)="onScanned($event)"></input-barcode>
+        </div>
+        <div class="col-md-6">
+          <div class="panel panel-default" *ngIf="currentScan" >
+            <div class="panel-heading">Configuración</div>
+            <div class="panel-body">
+              Cantidad: <strong>{{qty}}</strong>
+              <button type="button" class="btn btn-primary" (click)="askQuantity()">Cambiar Cantidad</button>
+                
+              <span *ngIf="currentScan.scan1">Escaneo 1: <strong>{{currentScan.scan1}}</strong> [P/N: {{ currentScan.partNumber }}] [L/N: {{ currentScan.lotName }}]</span><br />
+              <span *ngIf="currentScan.scan2">Escaneo 2: <strong>{{currentScan.scan2}}</strong></span>
+              <span>Lote: <strong>{{lastScan.lotName}}</strong></span>
+              <span>Part Number: <strong>{{lastScan.partNumber}}</strong></span>
+              <span>Expiry Date: <strong>{{lastScan.expDate}}</strong></span>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <button (click)="goBack()" class="btn btn-primary">Back</button>
     <regex-configuration (confUpdated)="handleConfUpdated($event)" [scanInProcess]="scanInProcess"></regex-configuration>
+    <button (click)="goBack()" class="btn btn-primary">Back</button>
   ` ,
 })
 export class IncomingsDetailComponent implements OnInit{ 
   @Input() picking: Picking;
   qty: number = 1;
   askQty: boolean = false;
-  askLotFlag: boolean = false;
-  barcodeReaderOn: boolean = false;
+  barcodeReaderOn: boolean = true;
   prevBarcodeState: boolean = false;
   currentConfig: Configuration;
+  currentScan: CurrentScan = new CurrentScan();
+  lastScan: CurrentScan;
   scanInProcess: boolean = false;
   switchBarcodeMode() {
     if (this.barcodeReaderOn) {
@@ -124,6 +129,7 @@ export class IncomingsDetailComponent implements OnInit{
   handleConfUpdated(conf: Configuration) {
     console.info(conf);
     this.currentConfig = conf;
+    this.cleanScan();
   };
   askQuantity() {
     let dialogRef = this.dialog.open(DialogAskQuantity);
@@ -141,6 +147,7 @@ export class IncomingsDetailComponent implements OnInit{
         clickToClose: false,
         maxLength: 20
     })
+    this.cleanScan();
   }
   handleResponse = (x: any) => {
     console.info('Response ', x);
@@ -151,27 +158,86 @@ export class IncomingsDetailComponent implements OnInit{
       this._notificationsService.success('Success', x.msg);
     }
   }
-  onScanned(event: string) {
-    console.log('Scanned item --> ', event);  
-    if (this.askLotFlag) {
-      let dialogRef = this.dialog.open(DialogAskLot);
-      dialogRef.afterClosed().subscribe(result => {
-        console.log(event, result, this.qty);
-        this.odoo.call(
-          'stock.picking.in', 
-          'jenck_receive_product', 
-          [this.picking.id], 
-          {'part_number': event, 'lot_name': result, context: {'qty': this.qty, 'mode': 'simple'}})
-          .then(this.handleResponse, this.handleError);
-        });
+  cleanScan() {
+    this.scanInProcess = false;
+    this.lastScan = Object.assign({}, this.currentScan);
+    this.currentScan.clean();
+  }
+  endScan() {
+    // Handle the end of the procedure of scanning, and flush everything after  
+    if (!this.currentScan.lotName){
+      let err = {
+        title: 'L/N Error',
+        message: 'Lot Name required'
+      } 
+      return this.handleError(err);
     }
-    else {
-      this.odoo.call(
-        'stock.picking.in', 
-        'jenck_receive_product', 
-        [this.picking.id], 
-        {scan: event, context: {'qty': this.qty, 'mode': 'match_regex'}})
-        .then(this.handleResponse, this.handleError);
+    if (!this.currentScan.partNumber){
+      let err = {
+        title: 'P/N Error',
+        message: 'Part Number required'
+      } 
+      return this.handleError(err);
+    }
+    
+    this.odoo.call(
+      'stock.picking.in', 
+      'jenck_receive_product', 
+      [this.picking.id], 
+      {'part_number': this.currentScan.partNumber, 'lot_name': this.currentScan.lotName, context: {'qty': this.qty, 'mode': 'simple'}})
+      .then(this.handleResponse, this.handleError);
+
+    this.cleanScan();
+  }
+  onScanned(event: string) {
+    this.scanInProcess = true;
+    console.log('Scanned item --> ', event);  
+    if (!this.currentConfig.use_2scan) {  // 1 scan only
+      this.currentScan.scan1 = event;
+       let lotNameMatch = event.match(this.currentConfig.regex_ln);
+      if (lotNameMatch) {
+        this.currentScan.lotName = lotNameMatch[0];
+      } else {
+        this.currentScan.lotName = '';
+      }
+      let partNumberMatch = event.match(this.currentConfig.regex_pn);
+      if (partNumberMatch) {
+        this.currentScan.partNumber = partNumberMatch[0];
+      } else {
+        this.currentScan.partNumber = '';
+      }
+      let expDateMatch = event.match(this.currentConfig.regex_expdate);
+      if (expDateMatch) {
+        this.currentScan.expDate = expDateMatch[0];
+      } else {
+        this.currentScan.expDate = '';
+      }
+      this.endScan();
+    } else {  // Two Scans
+      if (!this.currentScan.scan1) {  // First scan has not been performed
+        this.currentScan.scan1 = event;
+        let partNumberMatch = event.match(this.currentConfig.regex_pn);
+        if (partNumberMatch) {
+          this.currentScan.partNumber = partNumberMatch[0];
+        } else {
+          this.currentScan.partNumber = '';
+        }
+        let expDateMatch = event.match(this.currentConfig.regex_expdate);
+        if (expDateMatch) {
+          this.currentScan.expDate = expDateMatch[0];
+        } else {
+          this.currentScan.expDate = '';
+        }
+      } else {  // Second scan
+        this.currentScan.scan2 = event;
+        let lotNameMatch = event.match(this.currentConfig.regex_ln);
+        if (lotNameMatch) {
+          this.currentScan.lotName = lotNameMatch[0];
+        } else {
+          this.currentScan.lotName = '';
+        }
+        this.endScan();
+      } 
     }
   }
   // picking: Picking;
@@ -257,27 +323,6 @@ export class IncomingsComponent implements OnInit{
 })
 export class DialogAskQuantity {
   constructor(public dialogRef: MdDialogRef<DialogAskQuantity>) {
-  }
-  keyHandler (event: KeyboardEvent){
-    event.stopPropagation();  // Prevent the barcode listener of handling the event (because this is not a barcode)
-  }
-}
-
-
-@Component({
-  selector: 'dialog-ask-lot',
-  template: `
-  <h1 md-dialog-title>Numero de serie</h1>
-  <md-input-container class="example-full-width">
-    <input mdInput placeholder="Lote" #lotName (keypress)="keyHandler($event)">
-  </md-input-container>
-  <div md-dialog-actions>
-    <button md-button (click)="dialogRef.close(lotName.value)">Validar</button>
-  </div>
-  `,
-})
-export class DialogAskLot {
-  constructor(public dialogRef: MdDialogRef<DialogAskLot>) {
   }
   keyHandler (event: KeyboardEvent){
     event.stopPropagation();  // Prevent the barcode listener of handling the event (because this is not a barcode)

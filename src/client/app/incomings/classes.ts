@@ -11,3 +11,19 @@ export class Configuration {
 	regex_expdate: string;
 	use_2scan: boolean;
 }
+
+export class CurrentScan {
+	lotName: string;
+	partNumber: string;
+	expDate: string;
+	scan1: string;
+	scan2: string;
+
+    public clean() {
+    	this.lotName = '';
+    	this.partNumber = '';
+    	this.expDate = '';
+    	this.scan1 = '';
+    	this.scan2 = '';
+    }
+}

@@ -25,6 +25,11 @@ export class OpenService {
     return this.odoo.searchRead('stock.regex.config', [], ['name', 'regex_pn', 'regex_ln', 'regex_expdate', 'use_2scan'])
       .then( (configurations: any) => {
         console.log('[OpenService]: ', configurations);
+        for (var i in configurations.records){
+          configurations.records[i]['regex_pn'] = new RegExp(configurations.records[i]['regex_pn']);
+          configurations.records[i]['regex_ln'] = new RegExp(configurations.records[i]['regex_ln']);
+          configurations.records[i]['regex_expdate'] = new RegExp(configurations.records[i]['regex_expdate']);
+        }
         return configurations.records;
       });
   }
