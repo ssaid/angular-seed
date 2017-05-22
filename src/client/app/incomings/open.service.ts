@@ -22,13 +22,13 @@ export class OpenService {
       .then(pickings => pickings.find(picking => picking.id === id));
   }
   getConfigurations(): Promise<Configuration[]> {
-    return this.odoo.searchRead('stock.regex.config', [], ['name', 'regex_pn', 'regex_ln', 'regex_expdate', 'use_2scan'])
+    return this.odoo.searchRead('stock.regex.config', [], ['name', 'regex_pn', 'regex_ln', 'regex_expdate', 'use_2scan', 'regex_pn_fl', 'regex_ln_fl', 'regex_expdate_fl'])
       .then( (configurations: any) => {
         console.log('[OpenService]: ', configurations);
         for (var i in configurations.records){
-          configurations.records[i]['regex_pn'] = new RegExp(configurations.records[i]['regex_pn']);
-          configurations.records[i]['regex_ln'] = new RegExp(configurations.records[i]['regex_ln']);
-          configurations.records[i]['regex_expdate'] = new RegExp(configurations.records[i]['regex_expdate']);
+          configurations.records[i]['regex_pn'] = new RegExp(configurations.records[i]['regex_pn'], configurations.records[i]['regex_pn_fl']||'');
+          configurations.records[i]['regex_ln'] = new RegExp(configurations.records[i]['regex_ln'], configurations.records[i]['regex_ln_fl']||'');
+          configurations.records[i]['regex_expdate'] = new RegExp(configurations.records[i]['regex_expdate'], configurations.records[i]['regex_expdate_fl']||'');
         }
         return configurations.records;
       });
