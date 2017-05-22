@@ -168,6 +168,7 @@ export class IncomingsDetailComponent implements OnInit{
       this.currentScan.ok = true;
       this._notificationsService.success('Success', x.msg);
     }
+    this.cleanScan();
   }
   cleanScan() {
     this.scanInProcess = false;
@@ -201,7 +202,6 @@ export class IncomingsDetailComponent implements OnInit{
       {'part_number': this.currentScan.partNumber, 'lot_name': this.currentScan.lotName, context: {'qty': this.currentScan.qty, 'mode': 'simple'}})
       .then(this.handleResponse, this.handleError);
 
-    this.cleanScan();
   }
   onScanned(event: string) {
     this.scanInProcess = true;
