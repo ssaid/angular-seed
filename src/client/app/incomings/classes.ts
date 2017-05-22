@@ -18,6 +18,7 @@ export class CurrentScan {
 	expDate: string;
 	scan1: string;
 	scan2: string;
+	ok: boolean;
 
     public clean() {
     	this.lotName = '';
@@ -25,5 +26,6 @@ export class CurrentScan {
     	this.expDate = '';
     	this.scan1 = '';
     	this.scan2 = '';
+    	this.ok = false;
     }
 }

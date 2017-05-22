@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
     <div class="panel-heading">Barcode Scanner</div>
     <div class="panel-body">
       <div class="row">
-          <div class="col-lg-6">
+          <div class="col-md-12">
               <div class="input-group">
                   <div class="input-group-btn">
                       <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{barcodeReaderOn === true ? "Automatic detection" : "Manual detection"}}<span class="caret"></span></button>
@@ -20,7 +20,7 @@ import { FormsModule } from '@angular/forms';
                   </div><!-- /btn-group -->
                   <input type="text" class="form-control" placeholder="Barcode" [disabled]="barcodeReaderOn" [(ngModel)]="scanBuffer" (keyup.enter)="scanFinished(scanBuffer)">
               </div><!-- /input-group -->
-          </div><!-- /.col-lg-6 -->
+          </div><!-- /.col-md-12 -->
       </div>
     </div>
   </div>

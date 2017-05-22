@@ -13,7 +13,7 @@ import {MdDialog, MdDialogRef} from '@angular/material';
   moduleId: module.id,
   selector: 'regex-configuration',
   template: `
-<div class="row" *ngIf="selectedConf">
+<div class="col-md-12" *ngIf="selectedConf">
   <div class="panel panel-default">
     <div class="panel-heading">RegEx Configuration
       <div class="btn-group">
@@ -87,24 +87,32 @@ export class RegexConfigurationComponent implements OnInit{
           <h3 class="text-center">Recepcion(#{{picking.id}}) [{{picking.partner_id[1]}}]<span class="label label-info" *ngIf="scanInProcess">Escaneo en proceso</span> </h3>
           <input-barcode [barcodeReaderOn]="barcodeReaderOn" [endKeyCode]="13" (onScannedString)="onScanned($event)"></input-barcode>
         </div>
-        <div class="col-md-6">
-          <div class="panel panel-default" *ngIf="currentScan" >
-            <div class="panel-heading">Configuración</div>
-            <div class="panel-body">
-              Cantidad: <strong>{{qty}}</strong>
-              <button type="button" class="btn btn-primary" (click)="askQuantity()">Cambiar Cantidad</button>
-                
-              <span *ngIf="currentScan.scan1">Escaneo 1: <strong>{{currentScan.scan1}}</strong> [P/N: {{ currentScan.partNumber }}] [L/N: {{ currentScan.lotName }}]</span><br />
-              <span *ngIf="currentScan.scan2">Escaneo 2: <strong>{{currentScan.scan2}}</strong></span>
-              <span>Lote: <strong>{{lastScan.lotName}}</strong></span>
-              <span>Part Number: <strong>{{lastScan.partNumber}}</strong></span>
-              <span>Expiry Date: <strong>{{lastScan.expDate}}</strong></span>
-            </div>
+      </div>
+    </div> <!-- .row -->
+    <div class="row" *ngIf="lastScan">
+      <div class="col-md-8">
+        <div class="panel panel-default" [class.panel-success]="lastScan.ok === true">
+          <div class="panel-heading">Último ingreso</div>
+          <div class="panel-body fixed-panel">
+            <span>Lote: <strong>{{lastScan.lotName}}</strong></span> <br/>
+            <span>Part Number: <strong>{{lastScan.partNumber}}</strong></span>
+            <!--<span>Expiry Date: <strong>{{lastScan.expDate}}</strong></span>-->
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="panel panel-default" *ngIf="currentScan" >
+          <div class="panel-heading">Configuración</div>
+          <div class="panel-body fixed-panel">
+            Cantidad: <strong>{{qty}}</strong>
+            <button type="button" class="btn btn-primary" (click)="askQuantity()">Cambiar Cantidad</button>
           </div>
         </div>
       </div>
     </div>
-    <regex-configuration (confUpdated)="handleConfUpdated($event)" [scanInProcess]="scanInProcess"></regex-configuration>
+    <div class="row">
+      <regex-configuration (confUpdated)="handleConfUpdated($event)" [scanInProcess]="scanInProcess"></regex-configuration>
+    </div>
     <button (click)="goBack()" class="btn btn-primary">Back</button>
   ` ,
 })
@@ -139,6 +147,7 @@ export class IncomingsDetailComponent implements OnInit{
   }
   handleError = (err: any) => {
     console.warn('Error ', err);
+    this.currentScan.ok = false;
     this._notificationsService.error(err.title, err.message,
     {
         timeOut: 5000,
@@ -152,9 +161,11 @@ export class IncomingsDetailComponent implements OnInit{
   handleResponse = (x: any) => {
     console.info('Response ', x);
     if (x.state === 'fail'){
+      this.currentScan.ok = false;
       this._notificationsService.error('Error', x.msg);
     }
     else{
+      this.currentScan.ok = true;
       this._notificationsService.success('Success', x.msg);
     }
   }
