@@ -19,6 +19,7 @@ export class CurrentScan {
 	scan1: string;
 	scan2: string;
 	ok: boolean;
+	qty: number = 1;
 
     public clean() {
     	this.lotName = '';
@@ -27,5 +28,6 @@ export class CurrentScan {
     	this.scan1 = '';
     	this.scan2 = '';
     	this.ok = false;
+    	this.qty = 1;
     }
 }

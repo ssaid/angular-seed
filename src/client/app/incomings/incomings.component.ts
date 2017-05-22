@@ -95,7 +95,8 @@ export class RegexConfigurationComponent implements OnInit{
           <div class="panel-heading">Último ingreso</div>
           <div class="panel-body fixed-panel">
             <span>Lote: <strong>{{lastScan.lotName}}</strong></span> <br/>
-            <span>Part Number: <strong>{{lastScan.partNumber}}</strong></span>
+            <span>Part Number: <strong>{{lastScan.partNumber}}</strong></span> <br/>
+            <div *ngIf="lastScan.ok === true"><span>Cantidad: <strong>{{lastScan.qty}}</strong></span></div>
             <!--<span>Expiry Date: <strong>{{lastScan.expDate}}</strong></span>-->
           </div>
         </div>
@@ -104,7 +105,7 @@ export class RegexConfigurationComponent implements OnInit{
         <div class="panel panel-default" *ngIf="currentScan" >
           <div class="panel-heading">Configuración</div>
           <div class="panel-body fixed-panel">
-            Cantidad: <strong>{{qty}}</strong>
+            Cantidad: <strong>{{currentScan.qty}}</strong>
             <button type="button" class="btn btn-primary" (click)="askQuantity()">Cambiar Cantidad</button>
           </div>
         </div>
@@ -118,7 +119,6 @@ export class RegexConfigurationComponent implements OnInit{
 })
 export class IncomingsDetailComponent implements OnInit{ 
   @Input() picking: Picking;
-  qty: number = 1;
   askQty: boolean = false;
   barcodeReaderOn: boolean = true;
   prevBarcodeState: boolean = false;
@@ -142,7 +142,7 @@ export class IncomingsDetailComponent implements OnInit{
   askQuantity() {
     let dialogRef = this.dialog.open(DialogAskQuantity);
     dialogRef.afterClosed().subscribe(result => {
-      this.qty = parseInt(result)||1;
+      this.currentScan.qty = parseInt(result)||1;
     });
   }
   handleError = (err: any) => {
@@ -195,7 +195,7 @@ export class IncomingsDetailComponent implements OnInit{
       'stock.picking.in', 
       'jenck_receive_product', 
       [this.picking.id], 
-      {'part_number': this.currentScan.partNumber, 'lot_name': this.currentScan.lotName, context: {'qty': this.qty, 'mode': 'simple'}})
+      {'part_number': this.currentScan.partNumber, 'lot_name': this.currentScan.lotName, context: {'qty': this.currentScan.qty, 'mode': 'simple'}})
       .then(this.handleResponse, this.handleError);
 
     this.cleanScan();
