@@ -7,9 +7,14 @@ export class Configuration {
 	id: number;
 	name: string;
 	regex_pn: string;
+	regex_pn_fl: string;
 	regex_ln: string;
+	regex_ln_fl: string;
 	regex_expdate: string;
+	regex_expdate_fl: string;
 	use_2scan: boolean;
+	ln_prefix: string;
+	ln_suffix: string;
 }
 
 export class CurrentScan {

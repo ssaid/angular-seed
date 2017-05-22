@@ -31,7 +31,7 @@ import {MdDialog, MdDialogRef} from '@angular/material';
     </div>
     <dl class="dl-horizontal">
       <dt>Regex Lot<dt>
-      <dd>{{selectedConf.regex_ln}}</dd>
+      <dd>{{selectedConf.ln_prefix}}{{selectedConf.regex_ln}}{{selectedConf.ln_suffix}}</dd>
       <dt>Regex P/N</dt>
       <dd>{{selectedConf.regex_pn}}</dd>
       <dt>Regex Exp. Date</dt>
@@ -182,6 +182,8 @@ export class IncomingsDetailComponent implements OnInit{
         message: 'Lot Name required'
       } 
       return this.handleError(err);
+    } else {
+      this.currentScan.lotName = this.currentConfig.ln_prefix + this.currentScan.lotName + this.currentConfig.ln_suffix;
     }
     if (!this.currentScan.partNumber){
       let err = {
@@ -207,19 +209,19 @@ export class IncomingsDetailComponent implements OnInit{
       this.currentScan.scan1 = event;
        let lotNameMatch = event.match(this.currentConfig.regex_ln);
       if (lotNameMatch) {
-        this.currentScan.lotName = lotNameMatch[0];
+        this.currentScan.lotName = lotNameMatch[1];
       } else {
         this.currentScan.lotName = '';
       }
       let partNumberMatch = event.match(this.currentConfig.regex_pn);
       if (partNumberMatch) {
-        this.currentScan.partNumber = partNumberMatch[0];
+        this.currentScan.partNumber = partNumberMatch[1];
       } else {
         this.currentScan.partNumber = '';
       }
       let expDateMatch = event.match(this.currentConfig.regex_expdate);
       if (expDateMatch) {
-        this.currentScan.expDate = expDateMatch[0];
+        this.currentScan.expDate = expDateMatch[1];
       } else {
         this.currentScan.expDate = '';
       }
@@ -229,13 +231,13 @@ export class IncomingsDetailComponent implements OnInit{
         this.currentScan.scan1 = event;
         let partNumberMatch = event.match(this.currentConfig.regex_pn);
         if (partNumberMatch) {
-          this.currentScan.partNumber = partNumberMatch[0];
+          this.currentScan.partNumber = partNumberMatch[1];
         } else {
           this.currentScan.partNumber = '';
         }
         let expDateMatch = event.match(this.currentConfig.regex_expdate);
         if (expDateMatch) {
-          this.currentScan.expDate = expDateMatch[0];
+          this.currentScan.expDate = expDateMatch[1];
         } else {
           this.currentScan.expDate = '';
         }
@@ -243,7 +245,7 @@ export class IncomingsDetailComponent implements OnInit{
         this.currentScan.scan2 = event;
         let lotNameMatch = event.match(this.currentConfig.regex_ln);
         if (lotNameMatch) {
-          this.currentScan.lotName = lotNameMatch[0];
+          this.currentScan.lotName = lotNameMatch[1];
         } else {
           this.currentScan.lotName = '';
         }
