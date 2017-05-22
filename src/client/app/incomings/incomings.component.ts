@@ -177,11 +177,12 @@ export class IncomingsDetailComponent implements OnInit{
   endScan() {
     // Handle the end of the procedure of scanning, and flush everything after  
     if (!this.currentScan.lotName){
-      let err = {
-        title: 'L/N Error',
-        message: 'Lot Name required'
-      } 
-      return this.handleError(err);
+      // let err = {
+      //   title: 'L/N Error',
+      //   message: 'Lot Name required'
+      // } 
+      // return this.handleError(err);
+      this.currentScan.lotName = '';
     } else {
       this.currentScan.lotName = this.currentConfig.ln_prefix + this.currentScan.lotName + this.currentConfig.ln_suffix;
     }
