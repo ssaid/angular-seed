@@ -23,8 +23,10 @@ export class ProjectConfig extends SeedConfig {
     this.NPM_DEPENDENCIES = [
       ...this.NPM_DEPENDENCIES,
       /* Select a pre-built Material theme */
-         {src: '@angular/material/core/theming/prebuilt/indigo-pink.css', inject: true}
-      // {src: 'jquery/dist/jquery.min.js', inject: 'libs'},
+         {src: '@angular/material/core/theming/prebuilt/indigo-pink.css', inject: true},
+       {src: 'jquery/dist/jquery.min.js', inject: 'libs'},
+       {src: 'bootstrap/dist/js/bootstrap.min.js', inject: 'libs'},
+       {src: 'bootstrap/dist/css/bootstrap.min.css', inject: true},
       // {src: 'lodash/lodash.min.js', inject: 'libs'},
     ];
 
