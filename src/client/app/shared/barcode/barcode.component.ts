@@ -55,7 +55,7 @@ export class BarcodeComponent implements OnChanges {
     // console.warn('Scan finished -> ', this.scanBuffer);
     if (scannedString !== ''){
       console.info("Scanned: ", scannedString);
-      this.onScannedString.emit(String(scannedString));
+      this.onScannedString.emit(String(scannedString).replace(/'/g, "-"));
       this.scanBuffer = '';
     }
   }
