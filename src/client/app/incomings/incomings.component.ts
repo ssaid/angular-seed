@@ -195,6 +195,9 @@ export class IncomingsDetailComponent implements OnInit{
       } 
       return this.handleError(err);
     }
+    // Replace ' with -
+    this.currentScan.partNumber = this.currentScan.partNumber.replace("'", "-")
+    this.currentScan.lotName = this.currentScan.lotName.replace("'", "-")
     this.odoo.call(
       'stock.picking.in', 
       'jenck_receive_product', 
