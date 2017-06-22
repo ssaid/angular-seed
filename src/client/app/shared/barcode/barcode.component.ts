@@ -22,6 +22,7 @@ import { FormsModule } from '@angular/forms';
               </div><!-- /input-group -->
           </div><!-- /.col-md-12 -->
       </div>
+Editable <input type="checkbox" [checked]="editMode" [(ngModel)]="editMode">
     </div>
   </div>
   `,
@@ -30,6 +31,7 @@ import { FormsModule } from '@angular/forms';
 export class BarcodeComponent implements OnChanges {
   scanBuffer: string = '';
   @Input() barcodeReaderOn: boolean = true;
+  editMode: boolean = false;
   @Input() endKeyCode: string;
   @Output() onScannedString: EventEmitter<string> = new EventEmitter<string>();
 
@@ -53,6 +55,10 @@ export class BarcodeComponent implements OnChanges {
 
   scanFinished(scannedString: string) {
     // console.warn('Scan finished -> ', this.scanBuffer);
+    if (this.editMode == true) {
+      this.editMode = false;
+      return;
+    }
     if (scannedString !== ''){
       console.info("Scanned: ", scannedString);
       this.onScannedString.emit(String(scannedString).replace(/'/g, "-"));
