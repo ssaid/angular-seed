@@ -96,6 +96,7 @@ export class RegexConfigurationComponent implements OnInit{
           <div class="panel-body fixed-panel">
             <span>Lote: <strong>{{lastScan.lotName}}</strong></span> <br/>
             <span>Part Number: <strong>{{lastScan.partNumber}}</strong></span> <br/>
+            <span>Expiry Date: <strong>{{lastScan.expDate}}</strong></span> <br/>
             <div *ngIf="lastScan.ok === true"><span>Cantidad: <strong>{{lastScan.qty}}</strong></span></div>
             <!--<span>Expiry Date: <strong>{{lastScan.expDate}}</strong></span>-->
           </div>
@@ -194,12 +195,11 @@ export class IncomingsDetailComponent implements OnInit{
       } 
       return this.handleError(err);
     }
-    
     this.odoo.call(
       'stock.picking.in', 
       'jenck_receive_product', 
       [this.picking.id], 
-      {'part_number': this.currentScan.partNumber, 'lot_name': this.currentScan.lotName, context: {'qty': this.currentScan.qty, 'mode': 'simple'}})
+      {'part_number': this.currentScan.partNumber, 'lot_name': this.currentScan.lotName, 'exp_date': this.currentScan.expDate || '', context: {'qty': this.currentScan.qty, 'mode': 'simple'}})
       .then(this.handleResponse, this.handleError);
 
   }
