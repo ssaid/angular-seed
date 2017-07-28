@@ -160,12 +160,18 @@ export class IncomingsDetailComponent implements OnInit{
     this.cleanScan();
   }
   handleResponse = (x: any) => {
+    debugger;
     console.info('Response ', x);
     if (x.state === 'fail'){
       this.currentScan.ok = false;
       this._notificationsService.error('Error', x.msg);
     }
     else{
+      if (x.last_input) {
+       this.currentScan.partNumber = x.last_input.pn;
+       this.currentScan.lotName = x.last_input.sn;
+       this.currentScan.qty = x.last_input.qty;
+      };
       this.currentScan.ok = true;
       this._notificationsService.success('Success', x.msg);
     }
@@ -203,9 +209,29 @@ export class IncomingsDetailComponent implements OnInit{
       .then(this.handleResponse, this.handleError);
 
   }
+  endScanAuto(scannedStr) {
+    // Handle the end of the procedure of scanning, and flush everything after  
+    if (!scannedStr){
+      let err = {
+        title: 'Scan Error',
+        message: 'Nothing scanned'
+      } 
+      return this.handleError(err);
+    }
+    this.odoo.call(
+      'stock.picking.in', 
+      'jenck_receive_product', 
+      [this.picking.id], 
+      {'scanned_str': scannedStr, context: {'qty': this.currentScan.qty, 'mode': 'auto'}})
+      .then(this.handleResponse, this.handleError);
+
+  }
   onScanned(event: string) {
     this.scanInProcess = true;
     console.log('Scanned item --> ', event);  
+    if (this.currentConfig.name == 'auto') {
+      return this.endScanAuto(event);
+    }
     if (!this.currentConfig.use_2scan) {  // 1 scan only
       this.currentScan.scan1 = event;
        let lotNameMatch = event.match(this.currentConfig.regex_ln);
