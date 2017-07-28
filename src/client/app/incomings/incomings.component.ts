@@ -67,6 +67,11 @@ export class RegexConfigurationComponent implements OnInit{
     this.open.getConfigurations()
       .then( (configurations: Configuration[]) => {
         this.configurations = configurations;
+        for (var i = 0, len = this.configurations.length; i < len; i++) {
+          if (this.configurations[i].name == 'auto'){
+            return this.selectConf(this.configurations[i]);
+          }
+        }
         this.selectConf(this.configurations[0]);
       }, (e) => console.warn(e))
   }
@@ -160,7 +165,6 @@ export class IncomingsDetailComponent implements OnInit{
     this.cleanScan();
   }
   handleResponse = (x: any) => {
-    debugger;
     console.info('Response ', x);
     if (x.state === 'fail'){
       this.currentScan.ok = false;
