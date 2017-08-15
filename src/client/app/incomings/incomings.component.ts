@@ -175,6 +175,7 @@ export class IncomingsDetailComponent implements OnInit{
        this.currentScan.partNumber = x.last_input.pn;
        this.currentScan.lotName = x.last_input.sn;
        this.currentScan.qty = x.last_input.qty;
+       this.currentScan.expDate = x.last_input.expdate;
       };
       this.currentScan.ok = true;
       this._notificationsService.success('Success', x.msg);
